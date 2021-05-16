@@ -1,6 +1,7 @@
 ## NestJS rest api for react-native seed project
 
 * NestJs
+* TypeORM
 * Docker
 
 ## Sample Todo List App API
@@ -10,7 +11,10 @@ Front end project: https://github.com/thoersch/react-native-ts-seed
 
 ## Running to App locally
 
-* `npm run start`
+* update the `ormconfig.json` file to point to your db instance / container
+* `npm run typeorm:migration:run`
+* `npm run build`
+* `npm run start:dev`
 
 ## Bulding & Running from container
 

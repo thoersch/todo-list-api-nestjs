@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, HttpException, HttpStatus} from '@nestjs/common';
 import { IdsWrapper } from 'src/ids-wrapper';
-import { Todo } from './todo.interface';
+import { ITodo } from './todo.interface';
 import { TodoService } from './todo.service';
 
 @Controller('todos')
@@ -10,13 +10,13 @@ export class TodosController {
     }
 
     @Get()
-    findAll() : Array<any> {
+    async findAll() : Promise<ITodo[]> {
         return this.todoService.findAll();
     }
 
     @Get(':id')
-    findOne(@Param('id') id: number) : Todo {
-        var todo = this.todoService.findOne(id);
+    async findOne(@Param('id') id: number) : Promise<ITodo> {
+        var todo = await this.todoService.findOne(id);
         if (todo) {
             return todo;
         }
@@ -25,13 +25,13 @@ export class TodosController {
     }
 
     @Post()
-    createTodo(@Body() todo: Todo) {
+    createTodo(@Body() todo: ITodo) {
         return this.todoService.create(todo);
     }
 
     @Put(':id')
-    updateTodo(@Param('id') id: number, @Body() updatedTodo: Todo) : Todo {
-        var updated = this.todoService.update(id, updatedTodo.done);
+    async updateTodo(@Param('id') id: number, @Body() updatedTodo: ITodo) : Promise<ITodo> {
+        var updated = await this.todoService.update(id, updatedTodo.done);
 
         if (updated) {
             return updated;
@@ -41,7 +41,6 @@ export class TodosController {
     }
 
     @Delete()
-    
     removeTodos(@Body() idsWrapper: IdsWrapper) {
         if (idsWrapper === undefined || idsWrapper.ids === undefined) {
             throw new HttpException('Invalid request', HttpStatus.EXPECTATION_FAILED);

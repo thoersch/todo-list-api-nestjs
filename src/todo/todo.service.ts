@@ -1,40 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { Todo } from './todo.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { Todo } from './todo.entity';
+import { ITodo } from './todo.interface';
 
 @Injectable()
 export class TodoService {
-    private todos: Todo[] = [];
+    constructor(@InjectRepository(Todo) private todoRepository: Repository<Todo>) {
 
-    create (todo: Todo) : Todo {
-        if (this.todos.length === 0) {
-            todo.id = 1;
-        } else {
-            var accumulator = (a,b) => a.id > b.id ? a.id : b.id;
-            todo.id = this.todos.reduce(accumulator).id + 1;
-        }
-        
-        todo.created = new Date();
-        this.todos.push(todo);
-        return todo;
     }
 
-    findAll () : Todo[] {
-        return this.todos;
+    create (todo: ITodo) : Promise<ITodo> {
+        return this.todoRepository.save(todo);
     }
 
-    findOne(id: number) : Todo {
-        return this.todos.find(t => t.id == id);
+    findAll () : Promise<ITodo[]> {
+        return this.todoRepository.find();
     }
 
-    update(id: number, done: boolean) : Todo {
-        var todo = this.todos.find(t => t.id == id);
-        if (todo) {
-            todo.done = done;
-        }
-        return todo;
+    findOne(id: number) : Promise<ITodo> {
+        return this.findOne(id);
     }
 
-    removeTodos(ids: number[]) {
-        this.todos = this.todos.filter(t => !ids.includes(t.id));
+    async update(id: number, done: boolean) : Promise<ITodo> {
+        const result = await this.todoRepository.createQueryBuilder().update().set({done: done}).whereInIds(id).execute();
+        return this.todoRepository.findOne(id);
+    }
+
+    async removeTodos(ids: number[]) : Promise<DeleteResult> {
+        return this.todoRepository.createQueryBuilder().delete().whereInIds(ids).execute();
     }
 }

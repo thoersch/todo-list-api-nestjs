@@ -18,6 +18,10 @@ COPY . .
 
 RUN npm run build
 
+#migrations
+RUN npm run typeorm migration:run
+
 EXPOSE 8080
 
+# start server
 CMD [ "node", "dist/main" ]
