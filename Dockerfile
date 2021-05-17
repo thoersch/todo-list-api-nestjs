@@ -18,10 +18,11 @@ COPY . .
 
 RUN npm run build
 
-#migrations
-RUN npm run typeorm migration:run
+ENV WAIT_VERSION 2.9.0
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
+RUN chmod +x /wait
 
 EXPOSE 8080
 
 # start server
-CMD [ "node", "dist/main" ]
+CMD /wait && npm run typeorm:migration:run && node dist/main
