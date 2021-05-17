@@ -11,15 +11,14 @@ Front end project: https://github.com/thoersch/react-native-ts-seed
 
 ## Running to App locally
 
-* update the `ormconfig.json` file to point to your db instance / container
+* update the `.env` file to point to your db instance / container
 * `npm run typeorm:migration:run`
 * `npm run build`
 * `npm run start:dev`
 
 ## Bulding & Running from container
 
-* Build container: `docker build /path/to/todo-api/ -t your-tag`
-* Run container: `docker run -p 8080:3000 your-tag`
+* Build & Run container: `docker compose up --build`
 
 ## License
 
