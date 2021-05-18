@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-list-deployment
+  labels:
+    app: todo-list-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-list-api
+  template:
+    metadata:
+      labels:
+        app: todo-list-api
+    spec:
+      containers:
+      - name: todo-list-api
+        image: thoersch/todo-list-api-nest-js
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-configmap
+              key: db_host
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-list-api-service
+spec:
+  selector:
+    app: todo-list-api
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 3000
+      nodePort: 30000
