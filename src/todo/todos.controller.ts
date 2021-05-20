@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpException, HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { IdsWrapper } from 'src/ids-wrapper';
 import { ITodo } from './todo.interface';
 import { TodoService } from './todo.service';
 
 @Controller('todos')
 export class TodosController {
+
+    private readonly logger: Logger = new Logger(TodosController.name);
+
     constructor(private todoService: TodoService) {
 
     }
@@ -21,6 +24,7 @@ export class TodosController {
             return todo;
         }
 
+        this.logger.log(`Request for todo ${id} but was not found in the database.`);
         throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
 
@@ -37,6 +41,7 @@ export class TodosController {
             return updated;
         }
 
+        this.logger.log(`Request for updating todo ${id} but did not match ${JSON.stringify(updatedTodo)}.`);
         throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
 

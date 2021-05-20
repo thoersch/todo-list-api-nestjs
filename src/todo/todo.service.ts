@@ -19,7 +19,7 @@ export class TodoService {
     }
 
     findOne(id: number) : Promise<ITodo> {
-        return this.findOne(id);
+        return this.todoRepository.findOne(id);
     }
 
     async update(id: number, done: boolean) : Promise<ITodo> {
