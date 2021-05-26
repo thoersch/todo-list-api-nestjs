@@ -36,7 +36,6 @@ spec:
               name: postgres-configmap
               key: db_host
 
-
 ---
 apiVersion: v1
 kind: Service
